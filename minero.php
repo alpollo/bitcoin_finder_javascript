@@ -1,7 +1,7 @@
 <?php
-
+//A connection to the database is created.
 require("php/entrar.php");
-
+//The 2048 blockchain words are obtained and concatenated, separated by commas.
 $datos = mysql_query("SELECT palabra
  FROM words");
 
@@ -12,26 +12,14 @@ while($datos2=mysql_fetch_array($datos))
   $cont .= $datos2[0].",";
 }
 
-$palabras = substr ($cont, 0, strlen($cont) - 1);
+$palabras = substr ($cont, 0, strlen($cont) - 1); 
 
-
-
-$palabras2 = substr ($cont2, 0, strlen($cont2) - 1);
-
+//The connection is closed 
 mysql_close($conex);
 
 ?>
 
-<!-- <script src="./js/jquery-3.3.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous"></script> -->
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> -->
-        <script src="./js/jquery-3.3.1.js"></script>
-        <script src="./js/bip39-libs.js"></script>
-        <script src="./js/sjcl-bip39.js"></script>
-        <script src="./js/wordlist_english.js"></script>
-        <script src="./js/jsbip39.js"></script>
-        <script src="./js/index.js"></script>
+<script src="./js/jquery-3.3.1.js"></script>
 
 
 Threads : <input type="button" id="menos_poder" value="-" style="display: inline-block; background-color: rgb(38, 113, 183); color: rgb(255, 255,255); font-weight: bold;"><input style="width: 40px;text-align: center;" type="text" id="threads" value="1"><input type="button" id="mas_poder" value="+" style="display: inline-block; background-color: rgb(38, 113, 183); color: rgb(255, 255,255); font-weight: bold;">
@@ -42,43 +30,24 @@ Threads : <input type="button" id="menos_poder" value="-" style="display: inline
 <input type="text" id="json2" style="display: none;">
 <input type="text" id="potencia" style="display: none;">
 <script>
-
+//Start The mining when the button is clicked
 $("#minero").click(function(){
   empezar();
 });
 
+//Reduce the number of threads
 $("#menos_poder").click(function(){
     if(parseInt($("#threads").val())>1){
        $("#threads").val(parseInt($("#threads").val())-1);
     }
 });
 
-
+//Increase the number of threads to use
 $("#mas_poder").click(function(){
     $("#threads").val(parseInt($("#threads").val())+1);
 });
 
-//obteniendo 12 palabras random
-// function getwords(cantidad){
-//   var cont = 0;
-//   var palabrarandom = "";
-//   var xxx = "";
-//   while(cont<cantidad){
-
-//     palabrarandom = arrPalabras[Math.floor(Math.random() * arrPalabras.length)];
-
-//     if($.inArray(palabrarandom, mispalabras)=='-1'){
-//       //mispalabras.push(palabrarandom);
-//       xxx += palabrarandom+" ";
-//       cont++;
-//     }
-
-
-//   }
-//   return xxx;
-// }
-
-
+//Create arrays with the words
 var arrPalabras = [];
 
 var palabras = "<?php echo $palabras?>";
@@ -91,12 +60,6 @@ var palabras2 = "<?php echo $palabras2?>";
 
 var partidas2 = palabras2.split(",");
 
-//var arrAddress = [];
-
-//var address = "<?php echo $palabras2?>";
-
-//var partidas2 = address.split(",");
-//var urlBase ="https://blockchain.info/multiaddr?limit=0&cors=true&active="; 
 
 for(var x=0;x<partidas.length;x++){
   arrPalabras.push(partidas[x]);
@@ -106,36 +69,13 @@ for(var x=0;x<partidas2.length;x++){
   arrPalabras2.push(partidas2[x]);
 }
 
-/*for(var x=0;x<partidas2.length;x++){
-  arrAddress.push(partidas2[x]);
-}*/
-
-// var pala = "";
-// var json = "";
-// var urlBase ="https://blockchain.info/multiaddr?limit=0&cors=true&active="; 
-// var direcciones = "";
-// var connt = 0;
-// var resilt = "";
-// var json2 = "";
-// var spliteado = "";
-// var spliteado2 = "";
-// var palabrita = "";
-// var clicks = 0;
-// var json3 = "";
-
 var timeout2;
 var backgroundWorker = [];
 var json2, direcciones;
 var data;
-// var sharedBufferJson = new SharedArrayBuffer(1024*1024)
-// var sharedJson = new Int32Array(sharedBufferJson)
-// var sharedBufferDirecciones = new SharedArrayBuffer(1024*1024)
-// var sharedDirecciones = new Int32Array(sharedBufferDirecciones)
 var count = 0;
-//Atomics.store();
-//for (let i = 0; i < length; i++) Atomics.store(sharedArray, i, "")
 
-
+//Create the webworker
 $(document).ready(function(){
   init();
 })
@@ -178,13 +118,14 @@ function init(){
   
 }
 
+//Function to get the number of threads per get
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-
+//If threads were sent by get, they are placed, otherwise threads = 1
 var threads = getParameterByName('threads');
 if(threads=='' || threads==0 || typeof threads === "undefined"){
  $("#threads").val(1); 
@@ -201,16 +142,17 @@ function empezar(){
   if(nrest != 0){
     nThreads ++;
   }
-  //console.log(Date.now());
+
   json2="";
   direcciones="";
   potencia=0;
   potencia2 = 0;
   
   for(i = 0; i < nThreads; i++){
+    //Creating webworkers according to the number of threads
     backgroundWorker[i] = new Worker('js/calculate.js'); 
     backgroundWorker[i].onmessage = function(e){
-       
+       //Getting the data
        json2 += e.data.json;
        direcciones += e.data.direcciones;
        potencia += e.data.count;
@@ -219,16 +161,11 @@ function empezar(){
         count=0;
         json2 = json2.slice(0, -3);
         direcciones = direcciones.slice(0, -2);
-        console.log(direcciones);
-
+        //Splitting address
         direcciones2 = direcciones.split("*");
         direcciones3 = direcciones.split("|");
         json3 = json2.split("*");
-        //alert(json2);
-        var x = 0;                     //  set your counter to 1
-        /*$("#direcciones").val(direcciones);
-        $("#json2").val(json2);*/
-        
+        var x = 0;                     //  set your counter to 1        
 
             var finx = "";
             var finy = "";
@@ -239,19 +176,19 @@ function empezar(){
                 
                 $("#potencia").val(e.data.count);
                 potencia2=$("#potencia").val();
-            
+                //Send the post with addresses to compare in the database, potencia is the amount of addresses per second created.
                 $.post("php/metodos_generalizados.php?act=enviar_ganador",{message:finy,direcciones:finx,potencia:Math.round((potencia2/2)*1237),
                 sesion:btoa(Math.round((potencia2/2)*1238))},
                 function(respuesta){          
 
 
                 });
-
+                //reset the webworker
                 for (var i = backgroundWorker.length - 1; i >= 0; i--) {
                     window.backgroundWorker[i].terminate();
                     delete window.backgroundWorker[i];
                 }
-
+                //Start Again
                 empezar();
 
             }
@@ -270,11 +207,6 @@ function empezar(){
 
 }
 
-$(document).ready(function() {
-
-    //empezar();
-
-});
 
 
 </script>
