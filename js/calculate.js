@@ -20,10 +20,6 @@ var count = 0;
 var count2 = 0;
 var window = self;
 
-  /*function getPrivateKeyToCheck(palabrita){
-     return btoa(palabrita) //we use btoa(palabrita) it doesn't have "|"
- };*/
-
 var cont = 0;
 var palabrarandom = "";
 var palabrarandom2 = "";
@@ -36,40 +32,26 @@ function getwords(cantidad,numero){
     palabrarandom2 = "";
     xxx = "";
 
-    if(numero==1){
         while(cont<cantidad){
-                //this code is to find the 12 words.
-            palabrarandom2 = arrPalabras[Math.floor(Math.random() * arrPalabras.length)];
-
-            if(palabrarandom2.indexOf(mispalabras2)=='-1'){
-                //mispalabras.push(palabrarandom); this is your original code. let me test it.// jsut a moment letme checko
-                xxx += palabrarandom2+" ";
-                cont++;
-            }
-
-
-        }
-    }else{
-        while(cont<cantidad){
-                //this code is to find the 12 words.
+            //this code is to get the 12 words.
             palabrarandom = arrPalabras2[Math.floor(Math.random() * arrPalabras2.length)];
 
             if(palabrarandom.indexOf(mispalabras)=='-1'){
-                //mispalabras.push(palabrarandom); this is your original code. let me test it.// jsut a moment letme checko
+                
                 xxx += palabrarandom+" ";
                 cont++;
             }
 
 
         }
-    }
+    
     return xxx.slice(0, -1);
 }
 
 var time = new Date().getTime();
 onmessage = function(e){
-    
     window.data= e.data[1];    
+    //import the bip39 library
     importScripts('./bip39-libs.js');
     importScripts('./sjcl-bip39.js');
     importScripts('./wordlist_english.js');
@@ -82,20 +64,20 @@ onmessage = function(e){
     time = new Date().getTime();
     for(i = 0; i < cnt; i++){
         
-         palabrita = getwords(12,0);
+         palabrita = getwords(12,0);//get 12 words phrase
         
-            pala2 = delayedPhraseChanged(palabrita,1);
-        if(pala2 != ""){
+         pala2 = delayedPhraseChanged(palabrita,1); //Converts the phrase to the first 21 bitcoin addresses into bip44 and bip32 (42 addresses and private keys)
+        if(pala2 != ""){//if phrase is correct in order
             pala2 = pala2.split("|");
 
             count2++; 
             for(var x=0;x<pala2.length;x+=2){
                 if((x+1)<pala2.length){
-                        json += pala2[x+1]+'|'+palabrita+'|'+pala2[x]+',\n';
-                        direcciones += pala2[x+1] + "|";                    
+                        json += pala2[x+1]+'|'+palabrita+'|'+pala2[x]+',\n';//Bitcoin Address|12 Word|PrivateKey
+                        direcciones += pala2[x+1] + "|";  //Bitcoin addresses                  
                 }
             }
-
+            //Additional dividers
             if(count2==3){
                 json += "*";
                 direcciones += "*";
@@ -103,16 +85,14 @@ onmessage = function(e){
             }
 
         }
-count++;
-        //remove this in real version
+        count++;
+        //The operation is cut every 10 seconds
         if( new Date().getTime() -  10000 >= time){
             //console.log(json);
             break;
         }
     }
-    //count = (count*20)/10;//direcciones has 20 address per search, 10 seconds of the search 
+    //The post is send to minero.php
     postMessage({json, direcciones,count});
-    //json2 = json.slice(0, -2);
-    //console.log(json2);
     
 }
