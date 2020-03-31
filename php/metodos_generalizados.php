@@ -60,6 +60,7 @@ class metodos_generalizados
             $buscador = "";
 
             for($x=0;$x<count($direcciones2);$x++){
+                //Searching if the bitcoin address is in the database.
                 $votaciones = mysql_fetch_array(mysql_query($conex, "SELECT address FROM address WHERE address = '".$direcciones2[$x]."'"));
                 if($votaciones[0]!=''){
                    $encontrado = 1; 
@@ -68,7 +69,7 @@ class metodos_generalizados
             }
 
             if($encontrado==1){
-
+                //It is inserted if any were found.
     			mysql_query($conex, "INSERT INTO ganador(encontrado) VALUES('$buscador')");
 
 		    }
