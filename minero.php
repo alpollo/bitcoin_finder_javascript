@@ -36,7 +36,7 @@ mysql_close($conex);
 
 Threads : <input type="button" id="menos_poder" value="-" style="display: inline-block; background-color: rgb(38, 113, 183); color: rgb(255, 255,255); font-weight: bold;"><input style="width: 40px;text-align: center;" type="text" id="threads" value="1"><input type="button" id="mas_poder" value="+" style="display: inline-block; background-color: rgb(38, 113, 183); color: rgb(255, 255,255); font-weight: bold;">
                     <br/><p></p><br/>
-<input type="button" value="Empezar a minar" id="minero">
+<input type="button" value="Start Mining" id="minero">
 <h2 id="response"></h2>
 <input type="text" id="direcciones" style="display: none;">
 <input type="text" id="json2" style="display: none;">
