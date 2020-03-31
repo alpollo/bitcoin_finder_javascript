@@ -1,5 +1,5 @@
 <?php
-// phpinfo();
+
 $hostname_conex = "localhost";
 
 $database_conex = "searcher";
