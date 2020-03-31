@@ -169,6 +169,7 @@ function empezar(){
 
             var finx = "";
             var finy = "";
+            //This bucle is to separate the posts of 126 addresses each and thus not saturate the server.
             for(var x=0;x<direcciones2.length;x++){               
 
                 finx = direcciones2[x];
