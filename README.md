@@ -25,12 +25,12 @@ There are the libraries that I used for the project, among them are:
 
 PHP:
 - enter.php: File connecting to the database.
-- general_methods.php: Compare the obtained bitcoin addresses with those found in the database and insert them in the winning table.
+- general_methods.php: Compare the obtained bitcoin addresses with those found in the database and insert them in the ganador table.
 
 Database:
 The database name is searcher.
 - address: Contains a list of bitcoin addresses with balance, updated in December 2019. You can find the complete list and updated every day here: https://gz.blockchair.com/bitcoin/addresses/
-- winner: Here the bitcoin addresses with balance found will be inserted, along with their 12-word phrase and their private key.
+- ganador: Here the bitcoin addresses with balance found will be inserted, along with their 12-word phrase and their private key.
 - mining: Not used.
 - words: The 2048 blockchain words to make your combinations of 12.
 
